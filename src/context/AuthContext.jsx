@@ -18,20 +18,26 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const init = async () => {
       const storedToken = localStorage.getItem('token')
+      const storedUser = localStorage.getItem('user')
+
       if (!storedToken) {
         setLoading(false)
         return
       }
+
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser))
+        } catch {}
+      }
+
       try {
         const { data } = await authAPI.me()
         const userData = data.data?.user ?? data.user ?? data
         setUser(userData)
         localStorage.setItem('user', JSON.stringify(userData))
       } catch {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        setUser(null)
-        setToken(null)
+        console.warn('Impossible de rafraîchir le profil, session conservée.')
       } finally {
         setLoading(false)
       }
@@ -43,12 +49,10 @@ export function AuthProvider({ children }) {
     const { data } = await authAPI.login(credentials)
     const receivedToken = data.data?.token ?? data.token ?? data.access_token
     const userData = data.data?.user ?? data.user ?? data
-
     localStorage.setItem('token', receivedToken)
     localStorage.setItem('user', JSON.stringify(userData))
     setToken(receivedToken)
     setUser(userData)
-
     return userData
   }, [])
 
@@ -56,23 +60,20 @@ export function AuthProvider({ children }) {
     const { data } = await authAPI.register(payload)
     const receivedToken = data.data?.token ?? data.token ?? data.access_token
     const userData = data.data?.user ?? data.user ?? data
-
     if (receivedToken) {
       localStorage.setItem('token', receivedToken)
       localStorage.setItem('user', JSON.stringify(userData))
       setToken(receivedToken)
       setUser(userData)
     }
-
     return userData
   }, [])
 
   const logout = useCallback(async () => {
     try {
       await authAPI.logout()
-    } catch {
-      // continue regardless
-    } finally {
+    } catch {}
+    finally {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       setToken(null)
