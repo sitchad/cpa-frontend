@@ -37,17 +37,17 @@ api.interceptors.response.use(
 
 // ─── AUTH ──────────────────────────────────────────────────────────────────────
 export const authAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
-  logout: () => api.post('/auth/logout'),
-  me: () => api.get('/auth/me'),
+  register: (data) => api.post('/api/auth/register', data),
+  login: (data) => api.post('/api/auth/login', data),
+  logout: () => api.post('/api/auth/logout'),
+  me: () => api.get('/api/auth/me'),
 }
 
 // ─── OFFERS ───────────────────────────────────────────────────────────────────
 export const offersAPI = {
-  getAll: (params) => api.get('/offers', { params }),
-  getById: (id) => api.get(`/offers/${id}`),
-  click: (id) => api.post(`/offers/${id}/click`),
+  getAll: (params) => api.get('/api/offers', { params }),
+  getById: (id) => api.get(`/api/offers/${id}`),
+  click: (id) => api.post(`/api/offers/${id}/click`),
 }
 
 // ─── WALLET ───────────────────────────────────────────────────────────────────

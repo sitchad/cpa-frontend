@@ -15,7 +15,6 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('token') || null)
   const [loading, setLoading] = useState(true)
 
-  // Vérifie et charge le profil au démarrage si un token existe
   useEffect(() => {
     const init = async () => {
       const storedToken = localStorage.getItem('token')
@@ -25,7 +24,7 @@ export function AuthProvider({ children }) {
       }
       try {
         const { data } = await authAPI.me()
-        const userData = data.user ?? data
+        const userData = data.data?.user ?? data.user ?? data
         setUser(userData)
         localStorage.setItem('user', JSON.stringify(userData))
       } catch {
@@ -42,8 +41,8 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (credentials) => {
     const { data } = await authAPI.login(credentials)
-    const receivedToken = data.token ?? data.access_token
-    const userData = data.user ?? data
+    const receivedToken = data.data?.token ?? data.token ?? data.access_token
+    const userData = data.data?.user ?? data.user ?? data
 
     localStorage.setItem('token', receivedToken)
     localStorage.setItem('user', JSON.stringify(userData))
@@ -55,8 +54,8 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (payload) => {
     const { data } = await authAPI.register(payload)
-    const receivedToken = data.token ?? data.access_token
-    const userData = data.user ?? data
+    const receivedToken = data.data?.token ?? data.token ?? data.access_token
+    const userData = data.data?.user ?? data.user ?? data
 
     if (receivedToken) {
       localStorage.setItem('token', receivedToken)
@@ -83,7 +82,7 @@ export function AuthProvider({ children }) {
 
   const refreshUser = useCallback(async () => {
     const { data } = await authAPI.me()
-    const userData = data.user ?? data
+    const userData = data.data?.user ?? data.user ?? data
     setUser(userData)
     localStorage.setItem('user', JSON.stringify(userData))
     return userData
