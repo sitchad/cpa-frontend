@@ -62,3 +62,4 @@ Et dans `src/services/api.js`, remplacez la `BASE_URL` par :
 const BASE_URL = import.meta.env.VITE_API_URL
 ```
 # cpa-frontend
+# cpa-frontende
