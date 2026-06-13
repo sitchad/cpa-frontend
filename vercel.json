@@ -1,12 +1,6 @@
+
 {
   "rewrites": [
-    {
-      "source": "/:path*",
-      "destination": "https://cpa-backend-main-2nqdmn.laravel.cloud/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
