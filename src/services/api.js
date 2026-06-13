@@ -29,6 +29,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
+      localStorage.removeItem('user_role')
       window.location.href = '/login'
     }
     return Promise.reject(error)
@@ -66,14 +67,14 @@ export const withdrawAPI = {
 // ─── ADMIN ────────────────────────────────────────────────────────────────────
 export const adminAPI = {
   stats: () => api.get('/admin/stats'),
-  getUsers: () => api.get('/admin/users'),
+  getUsers: (params) => api.get('/admin/users', { params }),
   getUserById: (id) => api.get(`/admin/users/${id}`),
-  banUser: (id) => api.put(`/admin/users/${id}/ban`),
-  getWithdrawals: () => api.get('/admin/withdrawals'),
-  approveWithdrawal: (id) => api.put(`/admin/withdrawals/${id}/approve`),
-  rejectWithdrawal: (id) => api.put(`/admin/withdrawals/${id}/reject`),
-  getPostbacks: () => api.get('/admin/postbacks'),
-  getFraudLogs: () => api.get('/admin/fraud-logs'),
+  banUser: (id, data) => api.put(`/admin/users/${id}/ban`, data),
+  getWithdrawals: (params) => api.get('/admin/withdrawals', { params }),
+  approveWithdrawal: (id, data) => api.put(`/admin/withdrawals/${id}/approve`, data),
+  rejectWithdrawal: (id, data) => api.put(`/admin/withdrawals/${id}/reject`, data),
+  getPostbacks: (params) => api.get('/admin/postbacks', { params }),
+  getFraudLogs: (params) => api.get('/admin/fraud-logs', { params }),
 }
 
 export default api

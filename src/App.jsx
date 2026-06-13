@@ -1,112 +1,57 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+// App.js
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
-
-// Pages
 import Login from './pages/Login'
-import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import Offers from './pages/Offers'
-import Wallet from './pages/Wallet'
-import Withdraw from './pages/Withdraw'
-import AdminDashboard from './pages/admin/AdminDashboard'
-import AdminUsers from './pages/admin/AdminUsers'
-import AdminWithdrawals from './pages/admin/AdminWithdrawals'
+import AdminDashboard from './pages/AdminDashboard'
 
-// ─── Route guards ──────────────────────────────────────────────────────────────
-
-function RequireAuth({ children }) {
-  const { isAuthenticated, loading } = useAuth()
-  const location = useLocation()
-
-  if (loading) {
-    return (
-      <div className="loading-overlay" style={{ minHeight: '100vh' }}>
-        <div className="spinner" />
-      </div>
-    )
-  }
-
+// Composant de protection des routes
+function ProtectedRoute({ children, requireAdmin = false }) {
+  const { user, isAuthenticated } = useAuth()
+  
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to="/login" />
   }
-
+  
+  if (requireAdmin && user?.role !== 'admin') {
+    return <Navigate to="/dashboard" />
+  }
+  
   return children
 }
 
-function RequireAdmin({ children }) {
-  const { isAuthenticated, isAdmin, loading } = useAuth()
-  const location = useLocation()
-
-  if (loading) {
-    return (
-      <div className="loading-overlay" style={{ minHeight: '100vh' }}>
-        <div className="spinner" />
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />
-  }
-
-  if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />
-  }
-
-  return children
-}
-
-function PublicRoute({ children }) {
-  const { isAuthenticated, isAdmin, loading } = useAuth()
-
-  if (loading) {
-    return (
-      <div className="loading-overlay" style={{ minHeight: '100vh' }}>
-        <div className="spinner" />
-      </div>
-    )
-  }
-
-  if (isAuthenticated) {
-    return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />
-  }
-
-  return children
-}
-
-// ─── Routes ───────────────────────────────────────────────────────────────────
-
-function AppRoutes() {
+// Composant principal
+function AppContent() {
   return (
     <Routes>
-      {/* Public */}
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-
-      {/* User protected */}
-      <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-      <Route path="/offers" element={<RequireAuth><Offers /></RequireAuth>} />
-      <Route path="/wallet" element={<RequireAuth><Wallet /></RequireAuth>} />
-      <Route path="/withdraw" element={<RequireAuth><Withdraw /></RequireAuth>} />
-
-      {/* Admin protected */}
-      <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
-      <Route path="/admin/users" element={<RequireAdmin><AdminUsers /></RequireAdmin>} />
-      <Route path="/admin/withdrawals" element={<RequireAdmin><AdminWithdrawals /></RequireAdmin>} />
-
-      {/* Fallback */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/login" element={<Login />} />
+      
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/admin" element={
+        <ProtectedRoute requireAdmin={true}>
+          <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/" element={<Navigate to="/dashboard" />} />
     </Routes>
   )
 }
 
-export default function App() {
+// App principale
+function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes />
+        <AppContent />
       </AuthProvider>
     </BrowserRouter>
   )
 }
+
+export default AppContent
