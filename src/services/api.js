@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://cpa-backend-main-2nqdmn.laravel.cloud'
+const BASE_URL = 'https://cpa-backend-main-2nqdmn.laravel.cloud/api'
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -37,43 +37,43 @@ api.interceptors.response.use(
 
 // ─── AUTH ──────────────────────────────────────────────────────────────────────
 export const authAPI = {
-  register: (data) => api.post('/api/auth/register', data),
-  login: (data) => api.post('/api/auth/login', data),
-  logout: () => api.post('/api/auth/logout'),
-  me: () => api.get('/api/auth/me'),
+  register: (data) => api.post('/auth/register', data),
+  login: (data) => api.post('/auth/login', data),
+  logout: () => api.post('/auth/logout'),
+  me: () => api.get('/auth/me'),
 }
 
 // ─── OFFERS ───────────────────────────────────────────────────────────────────
 export const offersAPI = {
-  getAll: (params) => api.get('/api/offers', { params }),
-  getById: (id) => api.get(`/api/offers/${id}`),
-  click: (id) => api.post(`/api/offers/${id}/click`),
+  getAll: (params) => api.get('/offers', { params }),
+  getById: (id) => api.get(`/offers/${id}`),
+  click: (id) => api.post(`/offers/${id}/click`),
 }
 
 // ─── WALLET ───────────────────────────────────────────────────────────────────
 export const walletAPI = {
-  get: () => api.get('/api/wallet'),
-  history: (params) => api.get('/api/wallet/history', { params }),
+  get: () => api.get('/wallet'),
+  history: (params) => api.get('/wallet/history', { params }),
 }
 
 // ─── WITHDRAW ─────────────────────────────────────────────────────────────────
 export const withdrawAPI = {
-  getAll: () => api.get('/api/withdraw'),
-  create: (data) => api.post('/api/withdraw', data),
-  getById: (id) => api.get(`/api/withdraw/${id}`),
+  getAll: () => api.get('/withdraw'),
+  create: (data) => api.post('/withdraw', data),
+  getById: (id) => api.get(`/withdraw/${id}`),
 }
 
 // ─── ADMIN ────────────────────────────────────────────────────────────────────
 export const adminAPI = {
-  stats: () => api.get('/api/admin/stats'),
-  getUsers: () => api.get('/api/admin/users'),
-  getUserById: (id) => api.get(`/api/admin/users/${id}`),
-  banUser: (id) => api.put(`/api/admin/users/${id}/ban`),
-  getWithdrawals: () => api.get('/api/admin/withdrawals'),
-  approveWithdrawal: (id) => api.put(`/api/admin/withdrawals/${id}/approve`),
-  rejectWithdrawal: (id) => api.put(`/api/admin/withdrawals/${id}/reject`),
-  getPostbacks: () => api.get('/api/admin/postbacks'),
-  getFraudLogs: () => api.get('/api/admin/fraud-logs'),
+  stats: () => api.get('/admin/stats'),
+  getUsers: () => api.get('/admin/users'),
+  getUserById: (id) => api.get(`/admin/users/${id}`),
+  banUser: (id) => api.put(`/admin/users/${id}/ban`),
+  getWithdrawals: () => api.get('/admin/withdrawals'),
+  approveWithdrawal: (id) => api.put(`/admin/withdrawals/${id}/approve`),
+  rejectWithdrawal: (id) => api.put(`/admin/withdrawals/${id}/reject`),
+  getPostbacks: () => api.get('/admin/postbacks'),
+  getFraudLogs: () => api.get('/admin/fraud-logs'),
 }
 
 export default api
